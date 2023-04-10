@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Introduction to Programming",
+    "description": "Learn the basics of programming with this introductory course.",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "name": "Web Development",
+    "description": "Learn how to build web applications with HTML, CSS, and JavaScript.",
+    "completed": false
+  }
+]
