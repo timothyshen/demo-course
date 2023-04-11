@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { CourseContent } from './course-content.schema';
 
 export interface Course {
   name: string;

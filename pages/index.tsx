@@ -1,10 +1,6 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import Head from "next/head"
 
-import CourseDetail from '@/components/CourseDetail'
-
-const inter = Inter({ subsets: ['latin'] })
+import CourseDetail from "@/components/CourseDetail"
 
 export default function Home() {
   return (

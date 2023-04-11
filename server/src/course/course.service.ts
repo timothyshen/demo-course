@@ -32,9 +32,11 @@ export class CourseService {
   }
 
   async update(id: string, updateCourseDto: Course): Promise<Course> {
-    return this.courseModel.findByIdAndUpdate(id, updateCourseDto, {
-      new: true,
-    });
+    const contentId = this.courseModel.findById(id);
+    return this.courseContentModel.findByIdAndUpdate(
+      (await contentId).content,
+      updateCourseDto,
+    );
   }
 
   async delete(id: string): Promise<Course> {

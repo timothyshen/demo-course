@@ -1,9 +1,9 @@
-import instance from './axios'
-import { Course, UserProgress } from '@/types'
+import instance from "./axios"
+import { Course, UserProgress, UserProfile } from "@/types"
 
 export const getAllCourse = async (): Promise<Course[]> => {
   try {
-    const response = await instance.get('/courses')
+    const response = await instance.get("/courses")
     return response.data
   } catch (error) {
     console.error(error)
@@ -14,6 +14,21 @@ export const getAllCourse = async (): Promise<Course[]> => {
 export const getCourseById = async (id: string): Promise<Course> => {
   try {
     const response = await instance.get(`/courses/${id}`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const updateCourse = async (
+  id: string,
+  content: string,
+): Promise<Course> => {
+  try {
+    const response = await instance.put(`/courses/${id}`, {
+      content,
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -39,7 +54,7 @@ export const createUserProgress = async (
   courseId: string,
 ): Promise<UserProgress> => {
   try {
-    const response = await instance.post('/user-progress', {
+    const response = await instance.post("/user-progress", {
       userId,
       courseId,
     })
@@ -56,11 +71,21 @@ export const updateUserProgress = async (
   completed: boolean,
 ): Promise<UserProgress> => {
   try {
-    const response = await instance.put('/user-progress', {
+    const response = await instance.put("/user-progress", {
       userId,
       courseId,
       completed,
     })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const getProfile = async (address: string): Promise<UserProfile> => {
+  try {
+    const response = await instance.get(`/user-profiles/${address}`)
     return response.data
   } catch (error) {
     console.error(error)

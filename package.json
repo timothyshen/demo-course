@@ -14,15 +14,19 @@
     "@types/node": "18.15.11",
     "@types/react": "18.0.32",
     "@types/react-dom": "18.0.11",
+    "@uiw/react-md-editor": "^3.6.0",
     "axios": "^1.3.4",
     "eslint-config-next": "13.2.4",
     "ethers": "^6.3.0",
-    "next": "13.2.4",
+    "next": "13.0.7",
+    "next-remove-imports": "^1.0.11",
+    "quilljs-markdown": "^1.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.6",
     "remark-gfm": "^3.0.1",
-    "typescript": "5.0.3"
+    "typescript": "5.0.3",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
