@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react"
 import ProgressSVG from "./ProgressSVG"
-import {
-  createUserProgress,
-  getAllCourse,
-  getUserProgress,
-  getProfile,
-} from "@/api"
+import { createUserProgress, getAllCourse, getUserProgress } from "@/api"
 import { Course } from "@/types"
 import ConnectWalletButton from "./ConnectWallet"
 import { useRouter } from "next/router"
 import { useAccountStore } from "@/store/account"
 import { useCourseStore } from "@/store/course"
+import { useUserProgressStore } from "@/store/userprogress"
 
 const CourseDetail: React.FC = () => {
   const route = useRouter()
   const { address, role } = useAccountStore()
-  const { courses, loading, fetchCourses } = useCourseStore()
-  const [progress, setProgress] = useState<number>(0)
+  const { courses, fetchCourses } = useCourseStore()
+  const { progressCount, setUserProgressCount } = useUserProgressStore()
   const [error, setError] = useState<Error | null>(null)
 
   const getAllCourses = async () => {
@@ -58,7 +54,7 @@ const CourseDetail: React.FC = () => {
       const completedCount = courses.filter(
         (course: Course) => course.completed,
       ).length
-      setProgress(completedCount)
+      setUserProgressCount(completedCount)
     }
   }, [courses])
 
@@ -97,7 +93,7 @@ const CourseDetail: React.FC = () => {
               <ProgressSVG
                 radius={30}
                 stroke={4}
-                progress={progress}
+                progress={progressCount}
                 courseTotal={courses.length}
               />
             )}

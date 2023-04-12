@@ -26,7 +26,6 @@ const CourseEditPage: React.FC = () => {
 
   const handleUpdate = async () => {
     try {
-      console.log(course)
       await updateCourse(id as string, course)
       alert("Update success")
       getCourse()

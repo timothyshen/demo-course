@@ -49,7 +49,6 @@ export class UserProgressController {
     @Param('userId') userId: string,
     @Param('courseId') courseId: string,
   ): Promise<UserProgress | null> {
-    console.log(userId, courseId);
     return this.userProgressService.checkCourseStatus(userId, courseId);
   }
 }

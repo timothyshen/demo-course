@@ -32,8 +32,6 @@ export class CourseService {
   }
 
   async update(id: string, contentDoc: string): Promise<Course> {
-    console.log('contentDoc', contentDoc);
-    console.log(contentDoc['markdown']);
     const course = await this.courseModel.findById(id);
 
     return this.courseContentModel.findByIdAndUpdate(
