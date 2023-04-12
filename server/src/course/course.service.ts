@@ -31,11 +31,16 @@ export class CourseService {
     return course;
   }
 
-  async update(id: string, updateCourseDto: Course): Promise<Course> {
-    const contentId = this.courseModel.findById(id);
+  async update(id: string, contentDoc: string): Promise<Course> {
+    console.log('contentDoc', contentDoc);
+    console.log(contentDoc['markdown']);
+    const course = await this.courseModel.findById(id);
+
     return this.courseContentModel.findByIdAndUpdate(
-      (await contentId).content,
-      updateCourseDto,
+      { _id: course.content },
+      {
+        markdown: contentDoc['markdown'],
+      },
     );
   }
 

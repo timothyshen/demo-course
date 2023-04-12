@@ -37,9 +37,9 @@ export class CourseController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateCourseDto: Course,
+    @Body() markdown: string,
   ): Promise<Course> {
-    return this.courseService.update(id, updateCourseDto);
+    return this.courseService.update(id, markdown);
   }
 
   @Delete(':id')

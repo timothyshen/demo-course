@@ -1,13 +1,8 @@
-/** @type {import('next').NextConfig} */
-const removeImports = require("next-remove-imports")()
+const withRemoveImports = require("next-remove-imports")()
 
+/** @type {import('next').NextConfig} */
 const NextConfig = {
   reactStrictMode: true,
 }
 
-module.exports = (phase, { defaultConfig }) => {
-  return removeImports({
-    ...defaultConfig,
-    ...NextConfig,
-  })
-}
+module.exports = withRemoveImports(NextConfig)

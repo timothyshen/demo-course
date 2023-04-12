@@ -10,3 +10,5 @@ export class UpdateUserProgressDto {
   @IsBoolean()
   completed: boolean;
 }
+
+

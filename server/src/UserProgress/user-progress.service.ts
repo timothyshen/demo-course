@@ -38,4 +38,15 @@ export class UserProgressService {
       { new: true }, // options
     );
   }
+
+  async checkCourseStatus(
+    userId: string,
+    courseId: string,
+  ): Promise<UserProgress | null> {
+    const userProgress = await this.userModel
+      .findOne({ userId, courseId })
+      .lean()
+      .exec();
+    return userProgress;
+  }
 }
