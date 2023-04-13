@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import { useAccountStore } from "@/store/account"
 import { useCourseStore } from "@/store/course"
 import { useUserProgressStore } from "@/store/userprogress"
+import { add } from "husky"
 
 const CourseDetail: React.FC = () => {
   const route = useRouter()
@@ -33,16 +34,66 @@ const CourseDetail: React.FC = () => {
           createUserProgress(id, course._id)
         }
         if (userCourse?.completed) {
-          return { ...course, completed: true }
+          return {
+            ...course,
+            completed: true,
+            previousCourseProgress: userCourse?.previousCourseProgress,
+          }
         } else {
           return { ...course, completed: false }
         }
       })
-      fetchCourses(courseWithProgress)
+      await fetchCourses(courseWithProgress)
     } catch (error) {
       console.error(error)
       setError(error as Error)
     }
+  }
+
+  const handleCourseStatus: React.FC<Course> = (
+    item: Course,
+    index: number,
+  ) => {
+    if (index === 0) {
+      // Always show the first item as complete
+      if (item.completed) {
+        return (
+          <button className="bg-green-500 text-white rounded-md px-2 m-2 w-[100px]">
+            Complete
+          </button>
+        )
+      }
+      return (
+        <button className="bg-gray-500 text-white rounded-md px-2 m-2 w-[100px]">
+          Not Read
+        </button>
+      )
+    }
+
+    if (item.completed) {
+      // Show the item as complete if it has been completed
+      return (
+        <button className="bg-green-500 text-white rounded-md px-2 m-2 w-[100px]">
+          Complete
+        </button>
+      )
+    }
+
+    const previousCourseProgress = courses[index - 1]
+    if (!previousCourseProgress.completed) {
+      // Show the item as locked if there is no previous course progress
+      return (
+        <button className="bg-red-500 text-white rounded-md px-2 m-2 w-[100px]">
+          Locked
+        </button>
+      )
+    }
+    // Show the item as unread if the previous course has been completed but this one has not
+    return (
+      <button className="bg-gray-500 text-white rounded-md px-2 m-2 w-[100px]">
+        Not Read
+      </button>
+    )
   }
 
   useEffect(() => {
@@ -104,7 +155,7 @@ const CourseDetail: React.FC = () => {
                 key={index}
                 className="p-3 flex justify-between align-middle"
               >
-                <div>
+                <div className="w-[100%]">
                   <h4
                     onClick={() => {
                       if (!address) return alert("Please connect wallet")
@@ -118,19 +169,7 @@ const CourseDetail: React.FC = () => {
                   </h4>
                   <p className="text-sm">{item.description}</p>
                 </div>
-                {address && (
-                  <div className="my-auto">
-                    {item.completed ? (
-                      <button className="bg-green-500 text-black rounded-md px-2 m-2 w-max">
-                        Complete
-                      </button>
-                    ) : (
-                      <button className="bg-gray-500 text-white rounded-md px-2 m-2 w-max">
-                        Not Read
-                      </button>
-                    )}
-                  </div>
-                )}
+                {address && handleCourseStatus(item, index)}
               </div>
             )
           })}

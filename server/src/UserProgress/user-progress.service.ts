@@ -36,20 +36,16 @@ export class UserProgressService {
   ): Promise<UserProgress> {
     // Find the most recent progress entry for the user and the course
     const progress = await this.userModel
-      .findOne({ userId, courseId })
-      .sort({ _id: -1 })
+      .findOneAndUpdate(
+        { userId, courseId },
+        { completed },
+        { new: true, sort: { _id: -1 } },
+      )
       .exec();
-    // Find the most recent progress entry for the previous course
-    const course = await this.courseService.findById(courseId);
-    const previousCourse = course.previousCourse
-      ? await this.courseService.findById(course.previousCourse)
-      : null;
-    const previousProgress = await this.userModel
-      .find({ userId, courseId: previousCourse._id.toString() })
-      .exec();
-    // Update the progress entry with the new status and previous entry
-    progress.completed = completed;
-    progress.previousCourseProgress = previousProgress[0]._id;
+    // Find the most recent progress entry for the previous course, if any
+    const previousCourse = await this.courseService.findById(courseId);
+    // Update the progress entry with the previous entry, if any
+    progress.previousCourseProgress = previousCourse.previousCourse;
     await progress.save();
 
     return progress;
