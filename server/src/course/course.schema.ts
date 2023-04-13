@@ -5,6 +5,7 @@ export interface Course {
   name: string;
   description: string;
   content: Types.ObjectId;
+  previousCourse?: Types.ObjectId;
   createdDate?: Date;
   updatedDate?: Date;
 }
@@ -19,6 +20,9 @@ export class Course extends Document {
 
   @Prop({ type: Types.ObjectId, ref: 'CourseContent' })
   content: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Course' })
+  previousCourse?: Types.ObjectId;
 
   @Prop({ default: Date.now })
   createdDate?: Date;

@@ -10,6 +10,7 @@ import {
 import { Course } from './course.schema';
 import { CourseService } from './course.service';
 import { createCourseDto } from './course.dto';
+import { Types } from 'mongoose';
 
 @Controller('courses')
 export class CourseController {
@@ -30,7 +31,7 @@ export class CourseController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string): Promise<Course> {
+  async findById(@Param('id') id: Types.ObjectId): Promise<Course> {
     return this.courseService.findById(id);
   }
 

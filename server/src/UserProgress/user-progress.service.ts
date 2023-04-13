@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { UserProgress, UserProgressDocument } from './user-progress.schema';
-
+import { UserProgress } from './user-progress.schema';
+import { CourseService } from '../course/course.service';
 @Injectable()
 export class UserProgressService {
   constructor(
     @InjectModel(UserProgress.name)
-    private userModel: Model<UserProgressDocument>,
+    private userModel: Model<UserProgress>,
+    @Inject(CourseService) private courseService: CourseService,
   ) {}
 
   async create(
@@ -18,6 +19,7 @@ export class UserProgressService {
       courseId,
       userId,
       completed: false,
+      previousCourseProgress: undefined,
     });
 
     return createdUserProgress.save();
@@ -29,14 +31,28 @@ export class UserProgressService {
 
   async updateCourseStatus(
     userId: string,
-    courseId: string,
+    courseId: Types.ObjectId,
     completed: boolean,
   ): Promise<UserProgress> {
-    return this.userModel.findOneAndUpdate(
-      { userId, courseId }, // query to find the document to update
-      { completed }, // updates to apply
-      { new: true }, // options
-    );
+    // Find the most recent progress entry for the user and the course
+    const progress = await this.userModel
+      .findOne({ userId, courseId })
+      .sort({ _id: -1 })
+      .exec();
+    // Find the most recent progress entry for the previous course
+    const course = await this.courseService.findById(courseId);
+    const previousCourse = course.previousCourse
+      ? await this.courseService.findById(course.previousCourse)
+      : null;
+    const previousProgress = await this.userModel
+      .find({ userId, courseId: previousCourse._id.toString() })
+      .exec();
+    // Update the progress entry with the new status and previous entry
+    progress.completed = completed;
+    progress.previousCourseProgress = previousProgress[0]._id;
+    await progress.save();
+
+    return progress;
   }
 
   async checkCourseStatus(

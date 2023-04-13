@@ -14,5 +14,6 @@ import { CourseContent, CourseContentSchema } from './course-content.schema';
   ],
   controllers: [CourseController],
   providers: [CourseService],
+  exports: [CourseService],
 })
 export class CourseModule {}

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Course } from './course.schema';
 import { CourseContent } from './course-content.schema';
 
@@ -12,10 +12,32 @@ export class CourseService {
     private courseContentModel: Model<CourseContent>,
   ) {}
 
-  async create(name: string, description: string, markdown: string) {
+  async create(
+    name: string,
+    description: string,
+    markdown: string,
+  ): Promise<Course> {
     const content = new this.courseContentModel({ markdown });
-    const course = new this.courseModel({ name, description, content });
     await content.save();
+
+    let course;
+    // Find the most recent course
+    const findCourse = await this.courseModel.find().sort({ _id: -1 }).exec();
+    if (findCourse.length > 0) {
+      course = new this.courseModel({
+        name,
+        description,
+        content: content._id,
+        previousCourse: findCourse[0]._id,
+      });
+    } else {
+      course = new this.courseModel({
+        name,
+        description,
+        content: content._id,
+      });
+    }
+
     await course.save();
     return course;
   }
@@ -24,7 +46,7 @@ export class CourseService {
     return this.courseModel.find();
   }
 
-  async findById(courseId: string): Promise<Course> {
+  async findById(courseId: Types.ObjectId): Promise<Course> {
     const course = await this.courseModel
       .findById(courseId)
       .populate('content');
