@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { UserProgress, UserProgressDocument } from './user-progress.schema';
-
+import { UserProgress } from './user-progress.schema';
+import { CourseService } from '../course/course.service';
 @Injectable()
 export class UserProgressService {
   constructor(
     @InjectModel(UserProgress.name)
-    private userModel: Model<UserProgressDocument>,
+    private userModel: Model<UserProgress>,
+    @Inject(CourseService) private courseService: CourseService,
   ) {}
 
   async create(
@@ -18,6 +19,7 @@ export class UserProgressService {
       courseId,
       userId,
       completed: false,
+      previousCourseProgress: undefined,
     });
 
     return createdUserProgress.save();
@@ -29,14 +31,24 @@ export class UserProgressService {
 
   async updateCourseStatus(
     userId: string,
-    courseId: string,
+    courseId: Types.ObjectId,
     completed: boolean,
   ): Promise<UserProgress> {
-    return this.userModel.findOneAndUpdate(
-      { userId, courseId }, // query to find the document to update
-      { completed }, // updates to apply
-      { new: true }, // options
-    );
+    // Find the most recent progress entry for the user and the course
+    const progress = await this.userModel
+      .findOneAndUpdate(
+        { userId, courseId },
+        { completed },
+        { new: true, sort: { _id: -1 } },
+      )
+      .exec();
+    // Find the most recent progress entry for the previous course, if any
+    const previousCourse = await this.courseService.findById(courseId);
+    // Update the progress entry with the previous entry, if any
+    progress.previousCourseProgress = previousCourse.previousCourse;
+    await progress.save();
+
+    return progress;
   }
 
   async checkCourseStatus(

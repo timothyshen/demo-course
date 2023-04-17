@@ -1,14 +1,13 @@
 import { IsBoolean, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class UpdateUserProgressDto {
   @IsString()
   userId: string;
 
   @IsString()
-  courseId: string;
+  courseId: Types.ObjectId;
 
   @IsBoolean()
   completed: boolean;
 }
-
-

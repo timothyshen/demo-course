@@ -7,12 +7,12 @@ import {
   Put,
   Delete,
   Query,
+  Type,
 } from '@nestjs/common';
 import { UserProgressService } from './user-progress.service';
 import { CreateUserProgressDto } from './create-user-progress.dto';
 import { UserProgress } from './user-progress.schema';
 import { UpdateUserProgressDto } from './update-user-progress.dto';
-import { checkCourseStatusDto } from './check-user-status.dto';
 
 @Controller('user-progress')
 export class UserProgressController {
