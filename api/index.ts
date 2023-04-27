@@ -1,5 +1,5 @@
 import instance from "./axios"
-import { Course, UserProgress, UserProfile } from "@/types"
+import { Course, UserProgress, UserProfile, CreateCourseRequest } from "@/types"
 
 export const getAllCourse = async (): Promise<Course[]> => {
   try {
@@ -28,6 +28,24 @@ export const updateCourse = async (
   try {
     const response = await instance.put(`/courses/${id}`, {
       markdown,
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const createCourse = async (
+  title: string,
+  description: string,
+  markdown: string,
+): Promise<CreateCourseRequest> => {
+  try {
+    const response = await instance.post("/courses", {
+      name: title,
+      description: description,
+      markdown: markdown,
     })
     return response.data
   } catch (error) {

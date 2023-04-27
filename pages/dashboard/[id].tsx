@@ -45,7 +45,7 @@ const CourseEditPage: React.FC = () => {
           back
         </Link>
         <h1 className="mb-5">{courseName}</h1>
-        <p></p>
+        
         <MDEditor value={course} onChange={setCourse} />
         <button
           onClick={handleUpdate}
