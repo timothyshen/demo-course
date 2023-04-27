@@ -39,12 +39,14 @@ export const updateCourse = async (
 export const createCourse = async (
   title: string,
   description: string,
+  section: string,
   markdown: string,
 ): Promise<CreateCourseRequest> => {
   try {
     const response = await instance.post("/courses", {
       name: title,
       description: description,
+      section: section,
       markdown: markdown,
     })
     return response.data

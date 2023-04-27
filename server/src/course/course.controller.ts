@@ -21,6 +21,7 @@ export class CourseController {
     return this.courseService.create(
       createCourseDto.name,
       createCourseDto.description,
+      createCourseDto.section,
       createCourseDto.markdown,
     );
   }

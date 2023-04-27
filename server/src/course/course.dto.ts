@@ -8,5 +8,8 @@ export class createCourseDto {
   description: string;
 
   @IsNotEmpty()
+  section: string;
+
+  @IsNotEmpty()
   markdown: string;
 }

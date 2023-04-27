@@ -18,6 +18,9 @@ export class Course extends Document {
   @Prop({ required: true })
   description: string;
 
+  @Prop({ required: true })
+  section: string;
+
   @Prop({ type: Types.ObjectId, ref: 'CourseContent' })
   content: Types.ObjectId;
 

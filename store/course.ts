@@ -5,14 +5,14 @@ type CourseStore = {
   courses: Course[]
   error: Error | null
   loading: boolean
-  fetchCourses: (course: Course[]) => Promise<void>
+  setCourses: (course: Course[]) => Promise<void>
 }
 
 export const useCourseStore = create<CourseStore>((set, get) => ({
   courses: [],
   error: null,
   loading: false,
-  fetchCourses: async (courses: Course[]) => {
+  setCourses: async (courses: Course[]) => {
     set({ loading: true, error: null })
     try {
       set({ courses })

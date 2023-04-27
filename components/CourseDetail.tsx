@@ -7,18 +7,20 @@ import { useRouter } from "next/router"
 import { useAccountStore } from "@/store/account"
 import { useCourseStore } from "@/store/course"
 import { useUserProgressStore } from "@/store/userprogress"
+import CourseList from "./CourseDisplay"
+import { add } from "husky"
 
 const CourseDetail: React.FC = () => {
   const route = useRouter()
   const { address, role } = useAccountStore()
-  const { courses, fetchCourses } = useCourseStore()
+  const { courses, setCourses } = useCourseStore()
   const { progressCount, setUserProgressCount } = useUserProgressStore()
   const [error, setError] = useState<Error | null>(null)
 
   const getAllCourses = async () => {
     try {
       const courses = await getAllCourse()
-      fetchCourses(courses)
+      setCourses(courses)
     } catch (error) {
       setError(error as Error)
     }
@@ -42,57 +44,11 @@ const CourseDetail: React.FC = () => {
           return { ...course, completed: false }
         }
       })
-      await fetchCourses(courseWithProgress)
+      await setCourses(courseWithProgress)
     } catch (error) {
       console.error(error)
       setError(error as Error)
     }
-  }
-
-  const handleCourseStatus: React.FC<Course> = (
-    item: Course,
-    index: number,
-  ) => {
-    if (index === 0) {
-      // Always show the first item as complete
-      if (item.completed) {
-        return (
-          <button className="bg-green-500 text-white rounded-md px-2 m-2 w-[100px]">
-            Complete
-          </button>
-        )
-      }
-      return (
-        <button className="bg-gray-500 text-white rounded-md px-2 m-2 w-[100px]">
-          Not Read
-        </button>
-      )
-    }
-
-    if (item.completed) {
-      // Show the item as complete if it has been completed
-      return (
-        <button className="bg-green-500 text-white rounded-md px-2 m-2 w-[100px]">
-          Complete
-        </button>
-      )
-    }
-
-    const previousCourseProgress = courses[index - 1]
-    if (!previousCourseProgress.completed) {
-      // Show the item as locked if there is no previous course progress
-      return (
-        <button className="bg-red-500 text-white rounded-md px-2 m-2 w-[100px]">
-          Locked
-        </button>
-      )
-    }
-    // Show the item as unread if the previous course has been completed but this one has not
-    return (
-      <button className="bg-gray-500 text-white rounded-md px-2 m-2 w-[100px]">
-        Not Read
-      </button>
-    )
   }
 
   useEffect(() => {
@@ -115,7 +71,7 @@ const CourseDetail: React.FC = () => {
   }, [address])
 
   return (
-    <div className="text-center mx-auto w-2/3 h-1/2">
+    <div className="text-center mx-auto w-2/3 h-1/2 mb-10">
       <main className="mx-auto w-2/3">
         <h1>BNB tutorial</h1>
         {!address ? (
@@ -135,46 +91,7 @@ const CourseDetail: React.FC = () => {
             Dashboard
           </button>
         )}
-
-        <section className="text-left border rounded-t-lg mt-3">
-          <div className="bg-gray-200 px-3 flex justify-between items-center rounded-t-lg h-[60px]">
-            <h3>Section 1: BNB Chain</h3>
-            {address && (
-              <ProgressSVG
-                radius={30}
-                stroke={4}
-                progress={progressCount}
-                courseTotal={courses.length}
-              />
-            )}
-          </div>
-          {courses.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className="p-3 flex justify-between align-middle"
-              >
-                <div className="w-[100%]">
-                  <h4
-                    onClick={() => {
-                      if (!address) return alert("Please connect wallet")
-                      if (index !== 0 && !courses[index - 1].completed)
-                        return alert("Please complete previous course")
-                      route.push({
-                        pathname: `/course/${item._id}`,
-                      })
-                    }}
-                    className="text-lg w-full"
-                  >
-                    {item.name}
-                  </h4>
-                  <p className="text-sm">{item.description}</p>
-                </div>
-                {address && handleCourseStatus(item, index)}
-              </div>
-            )
-          })}
-        </section>
+        <CourseList courses={courses} address={address} />
       </main>
     </div>
   )

@@ -13,17 +13,15 @@ const CourseDetail: React.FC = () => {
   const [course, setCourse] = useState<any>()
   const [courseName, setCourseName] = useState<string>("")
   const [courseDescription, setCourseDescription] = useState<string>("")
+  const [courseSection, setCourseSection] = useState<string>("")
 
   const handleCreation = async () => {
-    console.log("create")
-    console.log({
-      name: courseName,
-      description: courseDescription,
-      markdown: course,
-    })
-
-    const result = await createCourse(courseName, courseDescription, course)
-    console.log(result)
+    const result = await createCourse(
+      courseName,
+      courseDescription,
+      courseSection,
+      course,
+    )
     alert("Create success")
     route.push("/dashboard")
   }
@@ -50,6 +48,13 @@ const CourseDetail: React.FC = () => {
         className="w-full p-1 mb-5 border border-gray-300 rounded-md"
       />
       <p className="mb-2">Course Description</p>
+      <input
+        type="text"
+        value={courseSection}
+        onChange={(e) => setCourseSection(e.target.value)}
+        className="w-full p-1 mb-5 border border-gray-300 rounded-md"
+      />
+      <p className="mb-2">Course Content</p>
       <MDEditor value={course} onChange={setCourse} />
       <button
         onClick={handleCreation}

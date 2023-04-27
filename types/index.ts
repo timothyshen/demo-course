@@ -2,14 +2,16 @@ export type Course = {
   id: number
   name: string
   description: string
+  section: string
   content: CourseContent
-  previousCourseProgress?: string | null
+  previousCourse?: string | null
   completed: boolean
 }
 
 export type CreateCourseRequest = {
   name: string
   description: string
+  section: string
   markdown: string
 }
 

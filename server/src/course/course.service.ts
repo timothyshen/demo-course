@@ -15,6 +15,7 @@ export class CourseService {
   async create(
     name: string,
     description: string,
+    section: string,
     markdown: string,
   ): Promise<Course> {
     const content = new this.courseContentModel({ markdown });
@@ -22,11 +23,17 @@ export class CourseService {
 
     let course;
     // Find the most recent course
-    const findCourse = await this.courseModel.find().sort({ _id: -1 }).exec();
+
+    const findCourse = await this.courseModel
+      .find({ section })
+      .sort({ _id: -1 })
+      .limit(1);
+
     if (findCourse.length > 0) {
       course = new this.courseModel({
         name,
         description,
+        section,
         content: content._id,
         previousCourse: findCourse[0]._id,
       });
@@ -34,6 +41,7 @@ export class CourseService {
       course = new this.courseModel({
         name,
         description,
+        section,
         content: content._id,
       });
     }
