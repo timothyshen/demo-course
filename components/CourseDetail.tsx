@@ -7,7 +7,6 @@ import { useRouter } from "next/router"
 import { useAccountStore } from "@/store/account"
 import { useCourseStore } from "@/store/course"
 import { useUserProgressStore } from "@/store/userprogress"
-import { add } from "husky"
 
 const CourseDetail: React.FC = () => {
   const route = useRouter()
@@ -159,6 +158,8 @@ const CourseDetail: React.FC = () => {
                   <h4
                     onClick={() => {
                       if (!address) return alert("Please connect wallet")
+                      if (index !== 0 && !courses[index - 1].completed)
+                        return alert("Please complete previous course")
                       route.push({
                         pathname: `/course/${item._id}`,
                       })

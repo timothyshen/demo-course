@@ -16,21 +16,32 @@ const CourseDetail: React.FC = () => {
       <Link className="text-blue-500 cursor-pointer" href="/">
         back
       </Link>
-      <h1>Course Detail</h1>
+      <div className="flex justify-between">
+        <h1>Course Detail</h1>
+        <button
+          onClick={() => {
+            route.push("/dashboard/create")
+          }}
+          className="px-4 py-2 m-2 text-white bg-gray-600 rounded-md hover:bg-gray-700"
+        >
+          + Create
+        </button>
+      </div>
+
       {courses.map((course, index) => (
-        <div key={index}>
+        <div className="bg-gray-100 rounded-lg p-4 my-4" key={index}>
           <div>
-            <h3>{course.name}</h3>
-            <p>{course.description}</p>
+            <h3 className="text-lg font-bold">{course.name}</h3>
+            <p className="text-gray-600">{course.description}</p>
           </div>
           <div>
             <button
               onClick={() => {
                 handleEdit(course._id)
               }}
-              className="px-4 py-2 m-2 text-white bg-gray-600 rounded-md hover:bg-gray-700"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
             >
-              edit
+              Edit
             </button>
           </div>
         </div>

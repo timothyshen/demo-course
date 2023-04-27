@@ -7,6 +7,12 @@ export type Course = {
   completed: boolean
 }
 
+export type CreateCourseRequest = {
+  name: string
+  description: string
+  markdown: string
+}
+
 export type UpdateCourseRequest = {
   completed: boolean
 }
