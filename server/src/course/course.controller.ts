@@ -48,4 +48,9 @@ export class CourseController {
   async delete(@Param('id') id: string): Promise<Course> {
     return this.courseService.delete(id);
   }
+
+  @Get('find/:id')
+  async findNextCourseById(@Param('id') id: string): Promise<any> {
+    return this.courseService.findNextCourse(id);
+  }
 }

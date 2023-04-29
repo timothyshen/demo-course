@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { getCourseById, updateUserProgress, checkCourseStatus } from "@/api"
+import {
+  getCourseById,
+  updateUserProgress,
+  checkCourseStatus,
+  getNextCourseId,
+} from "@/api"
 import { useRouter } from "next/router"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -13,13 +18,19 @@ export default function CourseDetail() {
   const [completed, setCompleted] = useState<boolean>(false)
   const [progress, setProgress] = useState(0)
   const [showPopup, setShowPopup] = useState(false)
-  const route = useRouter()
+  const [nextCourse, setNextCourse] = useState<string>("")
+  const [previousCourse, setPreviousCourse] = useState<string>("")
+  const router = useRouter()
 
   const getCourse = async () => {
-    const courseId = route.query.id
+    const courseId = router.query.id
+    console.log(courseId)
     if (courseId) {
       const course = await getCourseById(courseId as string)
+      const nextCourseId = await getNextCourseId(courseId as string)
       setCourseContent(course.content.markdown)
+      setPreviousCourse(course.previousCourse ? course.previousCourse : "")
+      setNextCourse(nextCourseId._id)
     }
   }
 
@@ -42,7 +53,7 @@ export default function CourseDetail() {
   }, [])
 
   const handleComplete = async () => {
-    const { id } = route.query
+    const { id } = router.query
     if (address && id) {
       await updateUserProgress(address as string, id as string, true)
       setShowPopup(true)
@@ -50,7 +61,7 @@ export default function CourseDetail() {
   }
 
   const checkCourse = async () => {
-    const { id } = route.query
+    const { id } = router.query
     if (address && id) {
       const status = await checkCourseStatus(address as string, id as string)
       setCompleted(status.completed)
@@ -59,13 +70,13 @@ export default function CourseDetail() {
 
   useEffect(() => {
     getCourse()
-  }, [route.query.id])
+  }, [router.query.id])
 
   useEffect(() => {
     checkCourse()
   }, [])
 
-  if (route.isFallback) {
+  if (router.isFallback) {
     return <div>Loading...</div>
   }
   return (
@@ -96,14 +107,30 @@ export default function CourseDetail() {
           children={courseContent}
           remarkPlugins={[remarkGfm]}
         />
-        <div className="flex flex-col justify-between items-center">
+        <div className="flex flex-row justify-between items-center">
           <button
             className="w-auto bg-gray-200 border-spacing-x-1 rounded-md p-2 mt-4 hover:bg-gray-400"
             onClick={() => {
-              route.push("/")
+              router.push({
+                pathname:
+                  previousCourse !== undefined
+                    ? `/course/${previousCourse}`
+                    : "/",
+              })
             }}
           >
             Back
+          </button>
+          <button
+            className="w-auto bg-gray-200 border-spacing-x-1 rounded-md p-2 mt-4 hover:bg-gray-400"
+            onClick={() => {
+              router.push({
+                pathname: `/course/${nextCourse}`,
+              })
+            }}
+            disabled={nextCourse === undefined ? true : false}
+          >
+            Next
           </button>
         </div>
       </div>

@@ -121,6 +121,16 @@ export const checkCourseStatus = async (
     const response = await instance.get(
       `/user-progress/check-status/${userId}/${courseId}`,
     )
+    return response.data || false
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const getNextCourseId = async (courseId: string): Promise<Course> => {
+  try {
+    const response = await instance.get(`/courses/find/${courseId}`)
     return response.data
   } catch (error) {
     console.error(error)

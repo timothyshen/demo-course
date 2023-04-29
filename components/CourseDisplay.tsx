@@ -21,7 +21,6 @@ const CourseList: React.FC<Props> = ({ courses, address }: Props) => {
       (course) => course._id === item.previousCourse,
     )
 
-    console.log("previousCourse", previousCourse)
     if (previousCourse === undefined) {
       // Always show the first item as complete
       return item.completed ? (

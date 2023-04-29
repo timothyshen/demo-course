@@ -75,4 +75,9 @@ export class CourseService {
   async delete(id: string): Promise<Course> {
     return this.courseModel.findByIdAndDelete(id);
   }
+
+  async findNextCourse(id: string): Promise<Course> {
+    const course = this.courseModel.findById(id);
+    return this.courseModel.findOne({ previousCourse: (await course)._id });
+  }
 }
